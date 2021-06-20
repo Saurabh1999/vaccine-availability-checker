@@ -33,7 +33,7 @@ function processRequest() {
       });
       let finalResponse = [];
       freeAvailableCenters.forEach((availableCenter) => {
-        let covaxinSessions = availableCenter.sessions.filter(session => session.vaccine == 'COVAXIN' && session.available_capacity_dose2 > 0 && session.min_age_limit == 18);
+        let covaxinSessions = availableCenter.sessions.filter(session => session.vaccine == 'COVAXIN' && session.available_capacity_dose2 > 0 && session.min_age_limit == 45);
         if (covaxinSessions.length > 0) {
           finalResponse.push(availableCenter);
         }
@@ -81,9 +81,6 @@ function sendEmail(message) {
   })
 
 }
-
-processRequest();
-
 
 app.get('/', (req, res) => {
   processRequest()
