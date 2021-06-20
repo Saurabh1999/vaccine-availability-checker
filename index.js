@@ -85,14 +85,14 @@ function sendEmail(message) {
 processRequest();
 
 
-// app.get('/', (req, res) => {
-  // processRequest()
-  //   .then(() => {
-  //     res.send('processed successfully');
-  //   })
-//   res.send('Hello World!')
-// })
+app.get('/', (req, res) => {
+  processRequest()
+    .then(() => {
+      res.send('processed successfully');
+    })
+  res.send('Hello World!')
+})
 
-// app.listen(port, () => {
-//   console.log(`Example app listening at http://localhost:${port}`)
-// })
+app.listen(port, () => {
+  console.log(`vaccine web app listening at http://localhost:${port}`)
+})
