@@ -1,7 +1,7 @@
 const fetch = require("node-fetch");
 const nodemailer = require('nodemailer');
 const express = require('express')
-const port = 3000;
+const port = process.env.PORT || 80;
 const app = express();
 
 function processRequest() {
