@@ -1,11 +1,13 @@
 const fetch = require("node-fetch");
 const nodemailer = require('nodemailer');
-const express = require('express')
+const express = require('express');
+const moment = require('moment');
 const port = process.env.PORT || 80;
 const app = express();
 
 function processRequest() {
-  return fetch("https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=624&date=20-06-2021", {
+  let finalResponse = [];
+  return fetch(`https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=624&date=${moment().format('DD-MM-YYYY')}`, {
     "headers": {
       "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
       "accept-language": "en-GB,en-US;q=0.9,en;q=0.8",
@@ -26,26 +28,32 @@ function processRequest() {
   })
     .then((response) => response.json())
     .then((data) => {
-      console.log(JSON.stringify(data, null, 2));
       let availableCenters = data && data.centers ? data.centers : [];
       let freeAvailableCenters = availableCenters.filter((availableCenter) => {
         return availableCenter['fee_type'].toLowerCase() == 'free';
       });
-      let finalResponse = [];
       freeAvailableCenters.forEach((availableCenter) => {
-        let covaxinSessions = availableCenter.sessions.filter(session => session.vaccine == 'COVAXIN' && session.available_capacity_dose2 > 0 && session.min_age_limit == 45);
+        let covaxinSessions = availableCenter.sessions.filter(session => session.vaccine == 'COVAXIN' && session.available_capacity_dose2 > 0 && session.min_age_limit == 18);
         if (covaxinSessions.length > 0) {
           finalResponse.push(availableCenter);
         }
       })
-      let dateObj = new Date();
-      console.log('finalResponse', finalResponse, dateObj.toDateString(), dateObj.toTimeString());
       if (finalResponse.length > 0) {
-        sendEmail(JSON.stringify(finalResponse, null, 2));
+        return sendEmail(JSON.stringify(finalResponse, null, 2));
       }
+      return Promise.resolve();
+    })
+    .then(() => {
+      let dateObj = new Date();
+      return Promise.resolve({
+        finalResponse,
+        dateText: dateObj.toDateString(),
+        timeText: dateObj.toTimeString()
+      })
     })
     .catch((err) => {
       console.error(err);
+      return Promise.reject(err);
     });
 }
 
