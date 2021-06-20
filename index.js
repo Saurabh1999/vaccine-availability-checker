@@ -92,10 +92,9 @@ function sendEmail(message) {
 
 app.get('/', (req, res) => {
   processRequest()
-    .then(() => {
-      res.send('processed successfully');
+    .then((data) => {
+      res.send(data);
     })
-  res.send('Hello World!')
 })
 
 app.listen(port, () => {
