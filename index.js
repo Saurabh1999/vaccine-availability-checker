@@ -2,7 +2,7 @@ const fetch = require("node-fetch");
 const nodemailer = require('nodemailer');
 const express = require('express')
 const port = 3000;
-
+const app = express();
 
 function processRequest() {
   return fetch("https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=624&date=20-06-2021", {
